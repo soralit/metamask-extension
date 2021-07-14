@@ -260,5 +260,5 @@ EditGasDisplay.propTypes = {
   showAdvancedForm: PropTypes.bool,
   setShowAdvancedForm: PropTypes.func,
   warning: PropTypes.string,
-  balaceError: PropTypes.bool,
+  balanceError: PropTypes.bool,
 };
