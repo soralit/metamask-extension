@@ -23,7 +23,6 @@ import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useBalanceSufficientForTx } from '../../../hooks/useBalanceSufficientForTx';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -59,6 +58,7 @@ export default function EditGasDisplay({
   showAdvancedForm,
   setShowAdvancedForm,
   warning,
+  balanceError,
 }) {
   const t = useContext(I18nContext);
 
@@ -66,16 +66,10 @@ export default function EditGasDisplay({
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged,
   );
 
-  const balanceSufficientForTx = useBalanceSufficientForTx(
-    defaultEstimateToUse,
-  );
-
-  const insufficientFundsError = !balanceSufficientForTx;
-
-  const showTopError = insufficientFundsError;
+  const showTopError = balanceError;
 
   let errorKey;
-  if (insufficientFundsError) {
+  if (balanceError) {
     errorKey = 'insufficientFunds';
   }
 
@@ -266,4 +260,5 @@ EditGasDisplay.propTypes = {
   showAdvancedForm: PropTypes.bool,
   setShowAdvancedForm: PropTypes.func,
   warning: PropTypes.string,
+  balaceError: PropTypes.bool,
 };

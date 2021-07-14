@@ -17,7 +17,6 @@ import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
 import EditGasDisplayEducation from '../edit-gas-display-education';
-import { useBalanceSufficientForTx } from '../../../hooks/useBalanceSufficientForTx';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -75,11 +74,8 @@ export default function EditGasPopover({
     isMaxFeeError,
     isMaxPriorityFeeError,
     isGasTooLow,
+    balanceError,
   } = useGasFeeInputs(defaultEstimateToUse);
-
-  const balanceIsSufficientForTx = useBalanceSufficientForTx(
-    defaultEstimateToUse,
-  );
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -182,7 +178,7 @@ export default function EditGasPopover({
               isMaxPriorityFeeError ||
               isGasTooLow ||
               isGasEstimatesLoading ||
-              !balanceIsSufficientForTx
+              balanceError
             }
           >
             {footerButtonText}
@@ -226,6 +222,7 @@ export default function EditGasPopover({
             isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
             mode={mode}
+            balanceError={balanceError}
             {...editGasDisplayProps}
           />
         )}
