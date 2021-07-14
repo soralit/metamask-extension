@@ -108,6 +108,8 @@ function getGasFeeEstimate(
  * @property {string} [estimatedMaximumNative] - the maximum amount estimated to
  *  be paid if the current network transaction volume increases. Expressed in
  *  the network's native currency.
+ * @property {string} [minimumCostInHexWei] - the the minimum amount estimated to
+ *  be paid for the current transaction, expressed in hex wei
  */
 
 /**
@@ -313,5 +315,6 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
+    minimumCostInHexWei,
   };
 }

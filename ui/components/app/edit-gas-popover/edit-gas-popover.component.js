@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
@@ -18,6 +17,7 @@ import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
 import EditGasDisplayEducation from '../edit-gas-display-education';
+import { useBalanceSufficientForTx } from '../../../hooks/useBalanceSufficientForTx';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -76,6 +76,10 @@ export default function EditGasPopover({
     isMaxPriorityFeeError,
     isGasTooLow,
   } = useGasFeeInputs(defaultEstimateToUse);
+
+  const balanceIsSufficientForTx = useBalanceSufficientForTx(
+    defaultEstimateToUse,
+  );
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -164,6 +168,7 @@ export default function EditGasPopover({
     <Popover
       title={title}
       onClose={closePopover}
+      className="edit-gas-popover__wrapper"
       onBack={
         showEducationContent ? () => setShowEducationContent(false) : undefined
       }
@@ -176,7 +181,8 @@ export default function EditGasPopover({
               isMaxFeeError ||
               isMaxPriorityFeeError ||
               isGasTooLow ||
-              isGasEstimatesLoading
+              isGasEstimatesLoading ||
+              !balanceIsSufficientForTx
             }
           >
             {footerButtonText}

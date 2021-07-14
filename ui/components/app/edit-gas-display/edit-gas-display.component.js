@@ -16,12 +16,14 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../../ui/info-tooltip';
+import ErrorMessage from '../../ui/error-message';
 import TransactionTotalBanner from '../transaction-total-banner/transaction-total-banner.component';
 import RadioGroup from '../../ui/radio-group/radio-group.component';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { useBalanceSufficientForTx } from '../../../hooks/useBalanceSufficientForTx';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -64,6 +66,19 @@ export default function EditGasDisplay({
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged,
   );
 
+  const balanceSufficientForTx = useBalanceSufficientForTx(
+    defaultEstimateToUse,
+  );
+
+  const insufficientFundsError = !balanceSufficientForTx;
+
+  const showTopError = insufficientFundsError;
+
+  let errorKey;
+  if (insufficientFundsError) {
+    errorKey = 'insufficientFunds';
+  }
+
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -73,6 +88,11 @@ export default function EditGasDisplay({
               className="actionable-message--warning"
               message={warning}
             />
+          </div>
+        )}
+        {showTopError && (
+          <div className="edit-gas-display__warning">
+            <ErrorMessage errorKey={errorKey} />
           </div>
         )}
         {requireDappAcknowledgement && (
