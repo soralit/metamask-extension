@@ -498,6 +498,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useStaticTokenList: false,
+            tokenAddressList: [],
           },
         };
 
@@ -519,6 +521,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x55',
             tokens: [],
+            useStaticTokenList: false,
+            tokenAddressList: [],
           },
         };
 
@@ -541,6 +545,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useStaticTokenList: false,
+            tokenAddressList: [],
           },
         };
 
@@ -568,6 +574,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x4',
             tokens: [],
+            useStaticTokenList: false,
+            tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
           },
         };
 
@@ -972,6 +980,32 @@ describe('Send Slice', () => {
             provider: {
               chainId: '0x4',
             },
+            useStaticTokenList: false,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: initialState,
 
@@ -1316,6 +1350,31 @@ describe('Send Slice', () => {
             chainId: '',
           },
           tokens: [],
+          useStaticTokenList: false,
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+              name: 'Chainlink',
+              iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+              aggregators: [
+                'airswapLight',
+                'bancor',
+                'cmc',
+                'coinGecko',
+                'kleros',
+                'oneInch',
+                'paraswap',
+                'pmm',
+                'totle',
+                'zapper',
+                'zerion',
+                'zeroEx',
+              ],
+              occurrences: 12,
+            },
+          },
         },
       };
 
@@ -1344,6 +1403,8 @@ describe('Send Slice', () => {
         expect(store.getActions()[1].payload).toStrictEqual({
           chainId: '',
           tokens: [],
+          useStaticTokenList: false,
+          tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
     });
@@ -1568,6 +1629,32 @@ describe('Send Slice', () => {
               chainId: '',
             },
             tokens: [],
+            useStaticTokenList: false,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: {
             asset: {
