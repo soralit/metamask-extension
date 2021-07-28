@@ -401,7 +401,6 @@ export default class TransactionController extends EventEmitter {
       maxFeePerGas: defaultMaxFeePerGas,
       maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
     } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
-
     const {
       gasLimit: defaultGasLimit,
       simulationFails,
@@ -414,6 +413,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
+      // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
+      //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
       if (
         txMeta.txParams.gasPrice &&
         !txMeta.txParams.maxFeePerGas &&
@@ -421,25 +422,56 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
+      } else {
+        if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
+          // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
+          // with the one returned by the gasFeeController, if that is available.
+          txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
+        }
+
+        if (
+          defaultMaxPriorityFeePerGas &&
+          !txMeta.txParams.maxPriorityFeePerGas
+        ) {
+          // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, then we set maxPriorityFeePerGas
+          // with the one returned by the gasFeeController, if that is available.
+          txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
+        if (defaultGasPrice && !txMeta.txParams.maxFeePerGas) {
+          // If the dapp has not set the gasPrice or the maxFeePerGas, and no maxFeePerGas is available
+          // from the gasFeeController, then we set maxFeePerGas to the defaultGasPrice, assuming it is
+          // available.
+          txMeta.txParams.maxFeePerGas = defaultGasPrice;
+        }
+
+        if (
+          txMeta.txParams.maxFeePerGas &&
+          !txMeta.txParams.maxPriorityFeePerGas
+        ) {
+          // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, and no maxPriorityFeePerGas is
+          // available from the gasFeeController, then we set maxPriorityFeePerGas to
+          // txMeta.txParams.maxFeePerGas, which will either be the gasPrice from the controller, the maxFeePerGas
+          // set by the dapp, or the maxFeePerGas from the controller.
+          txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.maxFeePerGas;
+        }
       }
 
-      if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
-        txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
-      }
-
-      if (
-        defaultMaxPriorityFeePerGas &&
-        !txMeta.txParams.maxPriorityFeePerGas
-      ) {
-        txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
-      }
+      // We remove the gasPrice param entirely when on an eip1559 compatible network
 
       delete txMeta.txParams.gasPrice;
     } else {
+      // We ensure that maxFeePerGas and maxPriorityFeePerGas are not in the transaction params
+      // when not on a EIP1559 compatible network
+
       delete txMeta.txParams.maxPriorityFeePerGas;
       delete txMeta.txParams.maxFeePerGas;
     }
 
+    // If we have gotten to this point, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas are
+    // set on txParams, it means that either we are on a non-EIP1559 network and the dapp didn't suggest
+    // a gas price, or we are on an EIP1559 network, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas
+    // were available from either the dapp or the network.
     if (
       defaultGasPrice &&
       !txMeta.txParams.gasPrice &&
@@ -448,6 +480,7 @@ export default class TransactionController extends EventEmitter {
     ) {
       txMeta.txParams.gasPrice = defaultGasPrice;
     }
+
     if (defaultGasLimit && !txMeta.txParams.gas) {
       txMeta.txParams.gas = defaultGasLimit;
     }
@@ -455,7 +488,7 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Gets default gas price, or returns `undefined` if gas price is already set
+   * Gets default gas fees, or returns `undefined` if gas fees are already set
    * @param {Object} txMeta - The txMeta object
    * @returns {Promise<string|undefined>} The default gas price
    */
@@ -489,10 +522,14 @@ export default class TransactionController extends EventEmitter {
           };
         }
       } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+        // The LEGACY type includes low, medium and high estimates of
+        // gas price values.
         return {
           gasPrice: decGWEIToHexWEI(gasFeeEstimates.medium),
         };
       } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+        // The ETH_GASPRICE type just includes a single gas price property,
+        // which we can assume was retrieved from eth_gasPrice
         return {
           gasPrice: decGWEIToHexWEI(gasFeeEstimates.gasPrice),
         };
@@ -503,7 +540,7 @@ export default class TransactionController extends EventEmitter {
 
     const gasPrice = await this.query.gasPrice();
 
-    return { gasPrice: addHexPrefix(gasPrice.toString(16)) };
+    return { gasPrice: gasPrice && addHexPrefix(gasPrice.toString(16)) };
   }
 
   /**

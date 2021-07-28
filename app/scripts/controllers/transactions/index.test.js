@@ -51,7 +51,7 @@ describe('Transaction Controller', function () {
         return '0xee6b2800';
       },
       networkStore: new ObservableStore(currentNetworkId),
-      getEIP1559Compatibility: () => Promise.resolve(true),
+      getEIP1559Compatibility: () => Promise.resolve(false),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) =>
@@ -443,6 +443,110 @@ describe('Transaction Controller', function () {
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        TEST_MAX_FEE_PER_GAS,
+        'should have added the correct max fee per gas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        TEST_MAX_PRIORITY_FEE_PER_GAS,
+        'should have added the correct max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
+    it('should add gasPrice as maxFeePerGas and maxPriorityFeePerGas if there are no sources of other fee data available', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        TEST_GASPRICE,
+        'should have added the correct max fee per gas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        TEST_GASPRICE,
+        'should have added the correct max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
+    it('should not add gasPrice if the fee data is available from the dapp', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+      const TEST_MAX_FEE_PER_GAS = '0x12a05f200';
+      const TEST_MAX_PRIORITY_FEE_PER_GAS = '0x77359400';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+            maxFeePerGas: TEST_MAX_FEE_PER_GAS,
+            maxPriorityFeePerGas: TEST_MAX_PRIORITY_FEE_PER_GAS,
           },
           history: [{}],
         },
@@ -934,6 +1038,9 @@ describe('Transaction Controller', function () {
     });
 
     it('sets txParams.type to 0x2 (EIP-1559)', async function () {
+      const eip1559CompatibilityStub = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
       txController.txStateManager._addTransactionsToState([
         {
           status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -952,6 +1059,7 @@ describe('Transaction Controller', function () {
       ]);
       await txController.signTransaction('2');
       assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x2');
+      eip1559CompatibilityStub.restore();
     });
   });
 
