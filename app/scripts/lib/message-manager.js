@@ -1,9 +1,10 @@
-import EventEmitter from 'events'
-import { ObservableStore } from '@metamask/obs-store'
-import ethUtil from 'ethereumjs-util'
-import { ethErrors } from 'eth-json-rpc-errors'
-import createId from './random-id'
-import { MESSAGE_TYPE } from './enums'
+import EventEmitter from 'events';
+import { ObservableStore } from '@metamask/obs-store';
+import { bufferToHex } from 'ethereumjs-util';
+import { ethErrors } from 'eth-rpc-errors';
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import createId from '../../../shared/modules/random-id';
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
@@ -35,12 +36,12 @@ export default class MessageManager extends EventEmitter {
    *
    */
   constructor() {
-    super()
+    super();
     this.memStore = new ObservableStore({
       unapprovedMsgs: {},
       unapprovedMsgCount: 0,
-    })
-    this.messages = []
+    });
+    this.messages = [];
   }
 
   /**
@@ -50,7 +51,7 @@ export default class MessageManager extends EventEmitter {
    *
    */
   get unapprovedMsgCount() {
-    return Object.keys(this.getUnapprovedMsgs()).length
+    return Object.keys(this.getUnapprovedMsgs()).length;
   }
 
   /**
@@ -63,9 +64,9 @@ export default class MessageManager extends EventEmitter {
     return this.messages
       .filter((msg) => msg.status === 'unapproved')
       .reduce((result, msg) => {
-        result[msg.id] = msg
-        return result
-      }, {})
+        result[msg.id] = msg;
+        return result;
+      }, {});
   }
 
   /**
@@ -79,18 +80,18 @@ export default class MessageManager extends EventEmitter {
    */
   addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
-      const msgId = this.addUnapprovedMessage(msgParams, req)
+      const msgId = this.addUnapprovedMessage(msgParams, req);
       // await finished
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'signed':
-            return resolve(data.rawSig)
+            return resolve(data.rawSig);
           case 'rejected':
             return reject(
               ethErrors.provider.userRejectedRequest(
                 'MetaMask Message Signature: User denied message signature.',
               ),
-            )
+            );
           default:
             return reject(
               new Error(
@@ -98,10 +99,10 @@ export default class MessageManager extends EventEmitter {
                   msgParams,
                 )}`,
               ),
-            )
+            );
         }
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -116,24 +117,24 @@ export default class MessageManager extends EventEmitter {
   addUnapprovedMessage(msgParams, req) {
     // add origin from request
     if (req) {
-      msgParams.origin = req.origin
+      msgParams.origin = req.origin;
     }
-    msgParams.data = normalizeMsgData(msgParams.data)
+    msgParams.data = normalizeMsgData(msgParams.data);
     // create txData obj with parameters and meta data
-    const time = new Date().getTime()
-    const msgId = createId()
+    const time = new Date().getTime();
+    const msgId = createId();
     const msgData = {
       id: msgId,
       msgParams,
       time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_SIGN,
-    }
-    this.addMsg(msgData)
+    };
+    this.addMsg(msgData);
 
     // signal update
-    this.emit('update')
-    return msgId
+    this.emit('update');
+    return msgId;
   }
 
   /**
@@ -144,8 +145,8 @@ export default class MessageManager extends EventEmitter {
    *
    */
   addMsg(msg) {
-    this.messages.push(msg)
-    this._saveMsgList()
+    this.messages.push(msg);
+    this._saveMsgList();
   }
 
   /**
@@ -156,7 +157,7 @@ export default class MessageManager extends EventEmitter {
    *
    */
   getMsg(msgId) {
-    return this.messages.find((msg) => msg.id === msgId)
+    return this.messages.find((msg) => msg.id === msgId);
   }
 
   /**
@@ -169,8 +170,8 @@ export default class MessageManager extends EventEmitter {
    *
    */
   approveMessage(msgParams) {
-    this.setMsgStatusApproved(msgParams.metamaskId)
-    return this.prepMsgForSigning(msgParams)
+    this.setMsgStatusApproved(msgParams.metamaskId);
+    return this.prepMsgForSigning(msgParams);
   }
 
   /**
@@ -180,7 +181,7 @@ export default class MessageManager extends EventEmitter {
    *
    */
   setMsgStatusApproved(msgId) {
-    this._setMsgStatus(msgId, 'approved')
+    this._setMsgStatus(msgId, 'approved');
   }
 
   /**
@@ -192,10 +193,10 @@ export default class MessageManager extends EventEmitter {
    *
    */
   setMsgStatusSigned(msgId, rawSig) {
-    const msg = this.getMsg(msgId)
-    msg.rawSig = rawSig
-    this._updateMsg(msg)
-    this._setMsgStatus(msgId, 'signed')
+    const msg = this.getMsg(msgId);
+    msg.rawSig = rawSig;
+    this._updateMsg(msg);
+    this._setMsgStatus(msgId, 'signed');
   }
 
   /**
@@ -206,8 +207,8 @@ export default class MessageManager extends EventEmitter {
    *
    */
   prepMsgForSigning(msgParams) {
-    delete msgParams.metamaskId
-    return Promise.resolve(msgParams)
+    delete msgParams.metamaskId;
+    return Promise.resolve(msgParams);
   }
 
   /**
@@ -217,7 +218,15 @@ export default class MessageManager extends EventEmitter {
    *
    */
   rejectMsg(msgId) {
-    this._setMsgStatus(msgId, 'rejected')
+    this._setMsgStatus(msgId, 'rejected');
+  }
+
+  /**
+   * Clears all unapproved messages from memory.
+   */
+  clearUnapproved() {
+    this.messages = this.messages.filter((msg) => msg.status !== 'unapproved');
+    this._saveMsgList();
   }
 
   /**
@@ -233,15 +242,15 @@ export default class MessageManager extends EventEmitter {
    *
    */
   _setMsgStatus(msgId, status) {
-    const msg = this.getMsg(msgId)
+    const msg = this.getMsg(msgId);
     if (!msg) {
-      throw new Error(`MessageManager - Message not found for id: "${msgId}".`)
+      throw new Error(`MessageManager - Message not found for id: "${msgId}".`);
     }
-    msg.status = status
-    this._updateMsg(msg)
-    this.emit(`${msgId}:${status}`, msg)
+    msg.status = status;
+    this._updateMsg(msg);
+    this.emit(`${msgId}:${status}`, msg);
     if (status === 'rejected' || status === 'signed') {
-      this.emit(`${msgId}:finished`, msg)
+      this.emit(`${msgId}:finished`, msg);
     }
   }
 
@@ -254,11 +263,11 @@ export default class MessageManager extends EventEmitter {
    *
    */
   _updateMsg(msg) {
-    const index = this.messages.findIndex((message) => message.id === msg.id)
+    const index = this.messages.findIndex((message) => message.id === msg.id);
     if (index !== -1) {
-      this.messages[index] = msg
+      this.messages[index] = msg;
     }
-    this._saveMsgList()
+    this._saveMsgList();
   }
 
   /**
@@ -269,10 +278,10 @@ export default class MessageManager extends EventEmitter {
    *
    */
   _saveMsgList() {
-    const unapprovedMsgs = this.getUnapprovedMsgs()
-    const unapprovedMsgCount = Object.keys(unapprovedMsgs).length
-    this.memStore.updateState({ unapprovedMsgs, unapprovedMsgCount })
-    this.emit('updateBadge')
+    const unapprovedMsgs = this.getUnapprovedMsgs();
+    const unapprovedMsgCount = Object.keys(unapprovedMsgs).length;
+    this.memStore.updateState({ unapprovedMsgs, unapprovedMsgCount });
+    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
   }
 }
 
@@ -286,8 +295,8 @@ export default class MessageManager extends EventEmitter {
 function normalizeMsgData(data) {
   if (data.slice(0, 2) === '0x') {
     // data is already hex
-    return data
+    return data;
   }
   // data is unicode, convert to hex
-  return ethUtil.bufferToHex(Buffer.from(data, 'utf8'))
+  return bufferToHex(Buffer.from(data, 'utf8'));
 }
