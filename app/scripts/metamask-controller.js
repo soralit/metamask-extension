@@ -14,6 +14,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import { MetaMaskKeyring as KeystoneKeyring } from '@keystonehq/eth-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import contractMap from '@metamask/contract-metadata';
@@ -332,7 +333,11 @@ export default class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      KeystoneKeyring,
+    ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -546,10 +551,13 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
     });
 
+    this.keystoneKeyring = new KeystoneKeyring();
+
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
         NetworkController: this.networkController.store,
+        KeystoneState: this.initialKeystoneState.bind(this)(),
         AccountTracker: this.accountTracker.store,
         TxController: this.txController.memStore,
         CachedBalancesController: this.cachedBalancesController.store,
@@ -800,6 +808,16 @@ export default class MetamaskController extends EventEmitter {
         this,
       ),
       setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
+
+      // keystone
+      submitKeystoneCryptoHDKey: nodeify(
+        this.keystoneKeyring.submitCryptoHDKey,
+        this.keystoneKeyring,
+      ),
+      cancelReadKeystoneCryptoHDKey: nodeify(
+        this.keystoneKeyring.cancelReadCryptoHDKey,
+        this.keystoneKeyring,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1443,6 +1461,9 @@ export default class MetamaskController extends EventEmitter {
         break;
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
+        break;
+      case 'keystone':
+        keyringName = KeystoneKeyring.type;
         break;
       default:
         throw new Error(
@@ -3047,5 +3068,17 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     return this.keyringController.setLocked();
+  }
+
+  //Keystone related methods
+
+  initialKeystoneState() {
+    const keystoneStore = new ObservableStore({
+      keystone: this.keystoneKeyring.getMemStore().getState(),
+    });
+    this.keystoneKeyring.getMemStore().subscribe((state) => {
+      keystoneStore.updateState({ keystone: state });
+    });
+    return keystoneStore;
   }
 }

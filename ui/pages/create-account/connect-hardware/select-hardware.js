@@ -59,12 +59,30 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToKeystoneButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === 'keystone',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'keystone' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/ledger-logo.svg"
+          alt="Ledger"
+        />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+          {this.renderConnectToKeystoneButton()}
         </div>
       </>
     );
