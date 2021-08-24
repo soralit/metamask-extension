@@ -2862,3 +2862,21 @@ export async function setUnconnectedAccountAlertShown(origin) {
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
+
+export function showKeystoneWalletImporter() {
+  return (dispatch) => {
+    dispatch(
+      showModal({
+        name: 'KEYSTONE_WALLET_IMPORTER',
+      }),
+    );
+  };
+}
+
+export async function submitKeystoneCryptoHDKey(cbor) {
+  await promisifiedBackground.submitKeystoneCryptoHDKey(cbor);
+}
+
+export async function cancelReadKeystoneCryptoHDKey() {
+  await promisifiedBackground.cancelReadKeystoneCryptoHDKey();
+}

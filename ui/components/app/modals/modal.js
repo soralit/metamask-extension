@@ -30,6 +30,7 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
+import KeystoneWalletImporter from './keystone-wallet-importer';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -390,6 +391,20 @@ const MODALS = {
     },
   },
 
+  KEYSTONE_WALLET_IMPORTER: {
+    contents: <KeystoneWalletImporter />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    disableBackdropClick: true,
+  },
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -405,6 +420,7 @@ function mapStateToProps(state) {
   return {
     active: state.appState.modal.open,
     modalState: state.appState.modal.modalState,
+    keystone: state.metamask.keystone,
   };
 }
 
@@ -418,6 +434,9 @@ function mapDispatchToProps(dispatch) {
     },
     hideWarning: () => {
       dispatch(actions.hideWarning());
+    },
+    showKeystoneWalletImporter: () => {
+      dispatch(actions.showKeystoneWalletImporter());
     },
   };
 }
@@ -439,6 +458,13 @@ class Modal extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps, _) {
+    const { keystone } = nextProps;
+    if (
+      this.props.keystone.sync.reading === false &&
+      keystone.sync.reading === true
+    ) {
+      this.props.showKeystoneWalletImporter();
+    }
     if (nextProps.active) {
       this.show();
     } else if (this.props.active) {
