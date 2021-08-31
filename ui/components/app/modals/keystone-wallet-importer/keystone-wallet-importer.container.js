@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(hideModal());
     },
     submitKeystoneCryptoHDKey: (cbor) => submitKeystoneCryptoHDKey(cbor),
-    cancelReadKeystoneCryptoHDKey: () => cancelReadKeystoneCryptoHDKey(),
+    cancelReadKeystoneCryptoHDKey: () => dispatch(cancelReadKeystoneCryptoHDKey()),
   };
 };
 

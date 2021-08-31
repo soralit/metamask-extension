@@ -2877,6 +2877,10 @@ export async function submitKeystoneCryptoHDKey(cbor) {
   await promisifiedBackground.submitKeystoneCryptoHDKey(cbor);
 }
 
-export async function cancelReadKeystoneCryptoHDKey() {
-  await promisifiedBackground.cancelReadKeystoneCryptoHDKey();
+export function cancelReadKeystoneCryptoHDKey() {
+  return async (dispatch) => {
+    console.log(`cancelRead`);
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelReadKeystoneCryptoHDKey();
+  }
 }

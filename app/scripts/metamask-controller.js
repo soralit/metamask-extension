@@ -1453,7 +1453,7 @@ export default class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case 'keystone':
+      case 'qr':
         keyringName = KeystoneKeyring.type;
         break;
       default:

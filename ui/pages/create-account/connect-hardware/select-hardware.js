@@ -59,13 +59,13 @@ export default class SelectHardware extends Component {
     );
   }
 
-  renderConnectToKeystoneButton() {
+  renderConnectToQRButton() {
     return (
       <button
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === 'keystone',
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'keystone' })}
+        onClick={(_) => this.setState({ selectedDevice: 'qr' })}
       >
         <img
           className="hw-connect__btn__img"
@@ -82,7 +82,7 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
-          {this.renderConnectToKeystoneButton()}
+          {this.renderConnectToQRButton()}
         </div>
       </>
     );
@@ -147,6 +147,8 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case 'trezor':
         return this.renderTrezorTutorialSteps();
+      case 'qr':
+        return this.renderQRHardwareWalletSteps();
       default:
         return '';
     }
@@ -246,6 +248,13 @@ export default class SelectHardware extends Component {
         ))}
       </div>
     );
+  }
+
+
+  renderQRHardwareWalletSteps() {
+    return (
+      <div>For QR Side</div>
+    )
   }
 
   renderConnectScreen() {
