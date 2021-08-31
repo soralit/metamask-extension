@@ -2863,24 +2863,24 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
 
-export function showKeystoneWalletImporter() {
+export function showAirGapedWalletImporter() {
   return (dispatch) => {
     dispatch(
       showModal({
-        name: 'KEYSTONE_WALLET_IMPORTER',
+        name: 'AIRGAPED_WALLET_IMPORTER',
       }),
     );
   };
 }
 
-export async function submitKeystoneCryptoHDKey(cbor) {
-  await promisifiedBackground.submitKeystoneCryptoHDKey(cbor);
+export async function submitAirGapedCryptoHDKey(cbor) {
+  await promisifiedBackground.submitAirGapedCryptoHDKey(cbor);
 }
 
-export function cancelReadKeystoneCryptoHDKey() {
+export function cancelReadAirGapedCryptoHDKey() {
   return async (dispatch) => {
     console.log(`cancelRead`);
     dispatch(hideLoadingIndication());
-    await promisifiedBackground.cancelReadKeystoneCryptoHDKey();
+    await promisifiedBackground.cancelReadAirGapedCryptoHDKey();
   }
 }
