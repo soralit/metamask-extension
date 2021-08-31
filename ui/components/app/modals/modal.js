@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
@@ -7,6 +7,9 @@ import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.du
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+
+// Air Gaped State Watcher
+import AirGapedStateWatcher from './AirGapedStateWatcher';
 
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
@@ -30,7 +33,7 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
-import KeystoneWalletImporter from './keystone-wallet-importer';
+import AirGapedWalletImporter from './airgaped-wallet-importer';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -391,8 +394,8 @@ const MODALS = {
     },
   },
 
-  KEYSTONE_WALLET_IMPORTER: {
-    contents: <KeystoneWalletImporter />,
+  AIRGAPED_WALLET_IMPORTER: {
+    contents: <AirGapedWalletImporter />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -420,7 +423,6 @@ function mapStateToProps(state) {
   return {
     active: state.appState.modal.open,
     modalState: state.appState.modal.modalState,
-    keystone: state.metamask.keystone,
   };
 }
 
@@ -434,9 +436,6 @@ function mapDispatchToProps(dispatch) {
     },
     hideWarning: () => {
       dispatch(actions.hideWarning());
-    },
-    showKeystoneWalletImporter: () => {
-      dispatch(actions.showKeystoneWalletImporter());
     },
   };
 }
@@ -458,13 +457,6 @@ class Modal extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps, _) {
-    const { keystone } = nextProps;
-    if (
-      this.props.keystone.sync.reading === false &&
-      keystone.sync.reading === true
-    ) {
-      this.props.showKeystoneWalletImporter();
-    }
     if (nextProps.active) {
       this.show();
     } else if (this.props.active) {
@@ -480,26 +472,29 @@ class Modal extends Component {
     const contentStyle = modal.contentStyle || {};
 
     return (
-      <FadeModal
-        keyboard={false}
-        onHide={() => {
-          if (modal.onHide) {
-            modal.onHide({
-              hideWarning: this.props.hideWarning,
-            });
-          }
-          this.props.hideModal(modal.customOnHideOpts);
-        }}
-        ref={(ref) => {
-          this.modalRef = ref;
-        }}
-        modalStyle={modalStyle}
-        contentStyle={contentStyle}
-        backdropStyle={BACKDROPSTYLE}
-        closeOnClick={!disableBackdropClick}
-      >
-        {children}
-      </FadeModal>
+      <Fragment>
+        <AirGapedStateWatcher />
+        <FadeModal
+          keyboard={false}
+          onHide={() => {
+            if (modal.onHide) {
+              modal.onHide({
+                hideWarning: this.props.hideWarning,
+              });
+            }
+            this.props.hideModal(modal.customOnHideOpts);
+          }}
+          ref={(ref) => {
+            this.modalRef = ref;
+          }}
+          modalStyle={modalStyle}
+          contentStyle={contentStyle}
+          backdropStyle={BACKDROPSTYLE}
+          closeOnClick={!disableBackdropClick}
+        >
+          {children}
+        </FadeModal>
+      </Fragment>
     );
   }
 }

@@ -8,7 +8,6 @@ import Spinner from '../../../ui/spinner';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 import { URDecoder } from '@ngraveio/bc-ur';
-import { CryptoHDKey } from '@keystonehq/bc-ur-registry-eth';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
@@ -16,11 +15,11 @@ const READY_STATE = {
   READY: 'READY',
 };
 
-export default class KeystoneWalletImporter extends Component {
+export default class AirGapedWalletImporter extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    submitKeystoneCryptoHDKey: PropTypes.func.isRequired,
-    cancelReadKeystoneCryptoHDKey: PropTypes.func.isRequired,
+    submitAirGapedCryptoHDKey: PropTypes.func.isRequired,
+    cancelReadAirGapedCryptoHDKey: PropTypes.func.isRequired,
     history: PropTypes.object,
   };
 
@@ -139,7 +138,7 @@ export default class KeystoneWalletImporter extends Component {
       } else if (result.type === 'unknown') {
         this.setState({ error: new Error(this.context.t('unknownQrCode')) });
       } else {
-        this.props.submitKeystoneCryptoHDKey(result.data);
+        this.props.submitAirGapedCryptoHDKey(result.data);
         this.stopAndClose();
       }
     } catch (error) {
@@ -161,7 +160,7 @@ export default class KeystoneWalletImporter extends Component {
       const urDecoder = new URDecoder();
       urDecoder.receivePart(content);
       const ur = urDecoder.resultUR();
-      return { type: 'keystone-wallet', data: ur.cbor.toString('hex') };
+      return { type: 'airgaped-wallet', data: ur.cbor.toString('hex') };
     } catch (e) {
       log.error(e);
     }
@@ -180,7 +179,7 @@ export default class KeystoneWalletImporter extends Component {
     }
     const { history } = this.props;
     this.props.hideModal();
-    this.props.cancelReadKeystoneCryptoHDKey();
+    this.props.cancelReadAirGapedCryptoHDKey();
     history.goBack();
   };
 
