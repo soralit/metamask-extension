@@ -818,6 +818,14 @@ export default class MetamaskController extends EventEmitter {
         this.airGapedKeyring.cancelReadCryptoHDKey,
         this.airGapedKeyring,
       ),
+      submitAirGapedSignature: nodeify(
+        this.airGapedKeyring.submitSignature,
+        this.airGapedKeyring,
+      ),
+      cancelAirGapedSignRequest: nodeify(
+        this.airGapedKeyring.cancelSignRequest,
+        this.airGapedKeyring,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
