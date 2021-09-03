@@ -128,7 +128,6 @@ export default class SignRequestReader extends Component {
 
   stopAndClose = () => {
     this.props.hideModal();
-    this.props.cancelAirGapedSignRequest();
   };
 
   tryAgain = () => {
@@ -192,7 +191,10 @@ export default class SignRequestReader extends Component {
         const requestId = ethSignature.getRequestId();
         const signId = uuid.stringify(requestId);
         if (signId === this.props.requestId) {
-          this.props.submitAirGapedSignature(result.cbor.toString('hex'));
+          this.props.submitAirGapedSignature(
+            signId,
+            result.cbor.toString('hex'),
+          );
           this.stopAndClose();
         } else {
           throw new Error('#mismatched_signId');

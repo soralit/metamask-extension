@@ -13,7 +13,8 @@ const mapDispatchToProps = (dispatch) => {
     hideModal: () => {
       dispatch(hideModal());
     },
-    submitAirGapedSignature: (cbor) => submitAirGapedSignature(cbor),
+    submitAirGapedSignature: (requestId, cbor) =>
+      submitAirGapedSignature(requestId, cbor),
     cancelAirGapedSignRequest: () => dispatch(cancelAirGapedSignRequest()),
   };
 };

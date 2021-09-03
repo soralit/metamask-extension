@@ -2897,8 +2897,8 @@ export function cancelReadAirGapedCryptoHDKey() {
   };
 }
 
-export async function submitAirGapedSignature(cbor) {
-  await promisifiedBackground.submitAirGapedSignature(cbor);
+export async function submitAirGapedSignature(requestId, cbor) {
+  await promisifiedBackground.submitAirGapedSignature(requestId, cbor);
 }
 
 export function cancelAirGapedSignRequest() {
