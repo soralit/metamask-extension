@@ -33,7 +33,11 @@ class AirGapedSignRequest extends Component {
 
   renderPlayer = () => {
     console.log(this.props);
-    const { payload: request, cancelAirGapedSignRequest, hideModal } = this.props;
+    const {
+      payload: request,
+      cancelAirGapedSignRequest,
+      hideModal,
+    } = this.props;
     const { payload, title, description } = request;
     return (
       <Player
@@ -53,12 +57,14 @@ class AirGapedSignRequest extends Component {
       cancelAirGapedSignRequest,
       hideModal,
       submitAirGapedSignature,
+      payload: request,
     } = this.props;
     return (
       <Reader
         cancelAirGapedSignRequest={cancelAirGapedSignRequest}
         hideModal={hideModal}
         submitAirGapedSignature={submitAirGapedSignature}
+        requestId={request.requestId}
       />
     );
   };
