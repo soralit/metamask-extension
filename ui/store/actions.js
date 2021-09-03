@@ -2863,11 +2863,24 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
 
+// Air Gaped Wallets
+
 export function showAirGapedWalletImporter() {
   return (dispatch) => {
     dispatch(
       showModal({
         name: 'AIRGAPED_WALLET_IMPORTER',
+      }),
+    );
+  };
+}
+
+export function showAirGapedSignRequest(payload) {
+  return (dispatch) => {
+    dispatch(
+      showModal({
+        name: 'AIRGAPED_SIGN_REQUEST',
+        payload,
       }),
     );
   };
@@ -2879,8 +2892,18 @@ export async function submitAirGapedCryptoHDKey(cbor) {
 
 export function cancelReadAirGapedCryptoHDKey() {
   return async (dispatch) => {
-    console.log(`cancelRead`);
     dispatch(hideLoadingIndication());
     await promisifiedBackground.cancelReadAirGapedCryptoHDKey();
-  }
+  };
+}
+
+export async function submitAirGapedSignature(cbor) {
+  await promisifiedBackground.submitAirGapedSignature(cbor);
+}
+
+export function cancelAirGapedSignRequest() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelAirGapedSignRequest();
+  };
 }

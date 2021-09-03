@@ -34,6 +34,7 @@ import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import AirGapedWalletImporter from './airgaped-wallet-importer';
+import AirGapedSignRequest from './airgaped-sign-request';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -396,6 +397,20 @@ const MODALS = {
 
   AIRGAPED_WALLET_IMPORTER: {
     contents: <AirGapedWalletImporter />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    disableBackdropClick: true,
+  },
+
+  AIRGAPED_SIGN_REQUEST: {
+    contents: <AirGapedSignRequest />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
