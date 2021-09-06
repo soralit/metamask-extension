@@ -63,9 +63,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'airgaped',
+          selected: this.state.selectedDevice === 'qr-hardware',
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'airgaped' })}
+        onClick={(_) => this.setState({ selectedDevice: 'qr-hardware' })}
       >
         <img
           className="hw-connect__btn__img"

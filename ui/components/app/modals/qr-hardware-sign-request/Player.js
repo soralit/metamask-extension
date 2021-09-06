@@ -12,7 +12,7 @@ export default class SignRequestPlayer extends Component {
     description: PropTypes.string,
 
     hideModal: PropTypes.func.isRequired,
-    cancelAirGapedSignRequest: PropTypes.func.isRequired,
+    cancelQRHardwareSignRequest: PropTypes.func.isRequired,
     toRead: PropTypes.func.isRequired,
   };
 
@@ -43,9 +43,9 @@ export default class SignRequestPlayer extends Component {
   }
 
   handleCancel() {
-    const { cancelAirGapedSignRequest, hideModal } = this.props;
+    const { cancelQRHardwareSignRequest, hideModal } = this.props;
     hideModal();
-    cancelAirGapedSignRequest();
+    cancelQRHardwareSignRequest();
   }
 
   render() {
@@ -55,7 +55,7 @@ export default class SignRequestPlayer extends Component {
     return (
       <div className="qr-scanner">
         <div className="qr-scanner__title">
-          <p>{this.context.t('scanWithAirGapedWallet')}</p>
+          <p>{this.context.t('scanWithQRHardwareWallet')}</p>
         </div>
         <div
           className="qr-scanner__content"
@@ -69,11 +69,11 @@ export default class SignRequestPlayer extends Component {
           <QRCode value={currentQRCode.toUpperCase()} size={250} />
         </div>
         <div style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 20 }}>
-          {this.context.t('scanAirGapedDescription')}
+          {this.context.t('scanQRHardwareDescription')}
         </div>
-        <div className="airgaped-transaction-display__button-group">
+        <div className="qr-hardware-transaction-display__button-group">
           <Button
-            className="airgaped-transaction-display__button"
+            className="qr-hardware-transaction-display__button"
             type="default"
             onClick={() => {
               this.handleCancel();
@@ -82,11 +82,11 @@ export default class SignRequestPlayer extends Component {
             {this.context.t('cancelTransaction')}
           </Button>
           <Button
-            className="airgaped-transaction-display__button"
+            className="qr-hardware-transaction-display__button"
             type="primary"
             onClick={toRead}
           >
-            {this.context.t('getAirGapedSignature')}
+            {this.context.t('getQRHardwareSignature')}
           </Button>
         </div>
       </div>

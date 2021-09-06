@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
+import React, { Component} from 'react';
 
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
@@ -7,9 +7,6 @@ import { resetCustomData as resetCustomGasData } from '../../../ducks/gas/gas.du
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-
-// Air Gaped State Watcher
-import AirGapedStateWatcher from './AirGapedStateWatcher';
 
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
@@ -33,8 +30,8 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
-import AirGapedWalletImporter from './airgaped-wallet-importer';
-import AirGapedSignRequest from './airgaped-sign-request';
+import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
+import QRHardwareSignRequest from './qr-hardware-sign-request';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -395,8 +392,8 @@ const MODALS = {
     },
   },
 
-  AIRGAPED_WALLET_IMPORTER: {
-    contents: <AirGapedWalletImporter />,
+  QR_HARDWARE_WALLET_IMPORTER: {
+    contents: <QRHardwareWalletImporter />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -409,8 +406,8 @@ const MODALS = {
     disableBackdropClick: true,
   },
 
-  AIRGAPED_SIGN_REQUEST: {
-    contents: <AirGapedSignRequest />,
+  QR_HARDWARE_SIGN_REQUEST: {
+    contents: <QRHardwareSignRequest />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -487,29 +484,26 @@ class Modal extends Component {
     const contentStyle = modal.contentStyle || {};
 
     return (
-      <Fragment>
-        <AirGapedStateWatcher />
-        <FadeModal
-          keyboard={false}
-          onHide={() => {
-            if (modal.onHide) {
-              modal.onHide({
-                hideWarning: this.props.hideWarning,
-              });
-            }
-            this.props.hideModal(modal.customOnHideOpts);
-          }}
-          ref={(ref) => {
-            this.modalRef = ref;
-          }}
-          modalStyle={modalStyle}
-          contentStyle={contentStyle}
-          backdropStyle={BACKDROPSTYLE}
-          closeOnClick={!disableBackdropClick}
-        >
-          {children}
-        </FadeModal>
-      </Fragment>
+      <FadeModal
+        keyboard={false}
+        onHide={() => {
+          if (modal.onHide) {
+            modal.onHide({
+              hideWarning: this.props.hideWarning,
+            });
+          }
+          this.props.hideModal(modal.customOnHideOpts);
+        }}
+        ref={(ref) => {
+          this.modalRef = ref;
+        }}
+        modalStyle={modalStyle}
+        contentStyle={contentStyle}
+        backdropStyle={BACKDROPSTYLE}
+        closeOnClick={!disableBackdropClick}
+      >
+        {children}
+      </FadeModal>
     );
   }
 }

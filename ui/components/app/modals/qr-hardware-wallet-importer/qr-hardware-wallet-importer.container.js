@@ -2,24 +2,23 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import {
-  submitAirGapedSignature,
+  cancelReadQRHardwareCryptoHDKey,
+  submitQRHardwareCryptoHDKey,
   hideModal,
-  cancelAirGapedSignRequest,
 } from '../../../../store/actions';
-import AirGapedSignRequest from './airgaped-sign-request.component';
+import QRHardwareWalletImporter from './qr-hardware-wallet-importer.component';
 
 const mapDispatchToProps = (dispatch) => {
   return {
     hideModal: () => {
       dispatch(hideModal());
     },
-    submitAirGapedSignature: (requestId, cbor) =>
-      submitAirGapedSignature(requestId, cbor),
-    cancelAirGapedSignRequest: () => dispatch(cancelAirGapedSignRequest()),
+    submitQRHardwareCryptoHDKey: (cbor) => submitQRHardwareCryptoHDKey(cbor),
+    cancelReadQRHardwareCryptoHDKey: () => dispatch(cancelReadQRHardwareCryptoHDKey()),
   };
 };
 
 export default compose(
   withRouter,
   connect(null, mapDispatchToProps),
-)(AirGapedSignRequest);
+)(QRHardwareWalletImporter);

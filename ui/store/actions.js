@@ -2863,47 +2863,47 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
 
-// Air Gaped Wallets
+// QR Hardware Wallets
 
-export function showAirGapedWalletImporter() {
+export function showQRHardwareWalletImporter() {
   return (dispatch) => {
     dispatch(
       showModal({
-        name: 'AIRGAPED_WALLET_IMPORTER',
+        name: 'QR_HARDWARE_WALLET_IMPORTER',
       }),
     );
   };
 }
 
-export function showAirGapedSignRequest(payload) {
+export function showQRHardwareSignRequest(payload) {
   return (dispatch) => {
     dispatch(
       showModal({
-        name: 'AIRGAPED_SIGN_REQUEST',
+        name: 'QR_HARDWARE_SIGN_REQUEST',
         payload,
       }),
     );
   };
 }
 
-export async function submitAirGapedCryptoHDKey(cbor) {
-  await promisifiedBackground.submitAirGapedCryptoHDKey(cbor);
+export async function submitQRHardwareCryptoHDKey(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
 }
 
-export function cancelReadAirGapedCryptoHDKey() {
+export function cancelReadQRHardwareCryptoHDKey() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
-    await promisifiedBackground.cancelReadAirGapedCryptoHDKey();
+    await promisifiedBackground.cancelReadQRHardwareCryptoHDKey();
   };
 }
 
-export async function submitAirGapedSignature(requestId, cbor) {
-  await promisifiedBackground.submitAirGapedSignature(requestId, cbor);
+export async function submitQRHardwareSignature(requestId, cbor) {
+  await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
 }
 
-export function cancelAirGapedSignRequest() {
+export function cancelQRHardwareSignRequest() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
-    await promisifiedBackground.cancelAirGapedSignRequest();
+    await promisifiedBackground.cancelQRHardwareSignRequest();
   };
 }

@@ -20,8 +20,8 @@ const READY_STATE = {
 export default class SignRequestReader extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    submitAirGapedSignature: PropTypes.func.isRequired,
-    cancelAirGapedSignRequest: PropTypes.func.isRequired,
+    submitQRHardwareSignature: PropTypes.func.isRequired,
+    cancelQRHardwareSignRequest: PropTypes.func.isRequired,
 
     requestId: PropTypes.string.isRequired,
   };
@@ -191,7 +191,7 @@ export default class SignRequestReader extends Component {
         const requestId = ethSignature.getRequestId();
         const signId = uuid.stringify(requestId);
         if (signId === this.props.requestId) {
-          this.props.submitAirGapedSignature(
+          this.props.submitQRHardwareSignature(
             signId,
             result.cbor.toString('hex'),
           );
@@ -247,14 +247,14 @@ export default class SignRequestReader extends Component {
 
   render() {
     const { error } = this.state;
-    const { cancelAirGapedSignRequest } = this.props;
+    const { cancelQRHardwareSignRequest } = this.props;
     return (
       <div className="qr-scanner">
         <div
           className="qr-scanner__close"
           onClick={() => {
             this.stopAndClose();
-            cancelAirGapedSignRequest();
+            cancelQRHardwareSignRequest();
           }}
         />
         {error ? this.renderError() : this.renderVideo()}

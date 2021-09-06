@@ -15,11 +15,11 @@ const READY_STATE = {
   READY: 'READY',
 };
 
-export default class AirGapedWalletImporter extends Component {
+export default class QRHardwareWalletImporter extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    submitAirGapedCryptoHDKey: PropTypes.func.isRequired,
-    cancelReadAirGapedCryptoHDKey: PropTypes.func.isRequired,
+    submitQRHardwareCryptoHDKey: PropTypes.func.isRequired,
+    cancelReadQRHardwareCryptoHDKey: PropTypes.func.isRequired,
     history: PropTypes.object,
   };
 
@@ -138,7 +138,7 @@ export default class AirGapedWalletImporter extends Component {
       } else if (result.type === 'unknown') {
         this.setState({ error: new Error(this.context.t('unknownQrCode')) });
       } else {
-        this.props.submitAirGapedCryptoHDKey(result.data);
+        this.props.submitQRHardwareCryptoHDKey(result.data);
         this.stopAndClose();
       }
     } catch (error) {
@@ -160,7 +160,7 @@ export default class AirGapedWalletImporter extends Component {
       const urDecoder = new URDecoder();
       urDecoder.receivePart(content);
       const ur = urDecoder.resultUR();
-      return { type: 'airgaped-wallet', data: ur.cbor.toString('hex') };
+      return { type: 'qr-hardware-wallet', data: ur.cbor.toString('hex') };
     } catch (e) {
       log.error(e);
     }
@@ -179,7 +179,7 @@ export default class AirGapedWalletImporter extends Component {
     }
     const { history } = this.props;
     this.props.hideModal();
-    this.props.cancelReadAirGapedCryptoHDKey();
+    this.props.cancelReadQRHardwareCryptoHDKey();
     history.goBack();
   };
 

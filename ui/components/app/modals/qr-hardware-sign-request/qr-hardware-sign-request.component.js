@@ -4,11 +4,11 @@ import Player from './player';
 import Reader from './reader';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 
-class AirGapedSignRequest extends Component {
+class QRHardwareSignRequest extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    submitAirGapedSignature: PropTypes.func.isRequired,
-    cancelAirGapedSignRequest: PropTypes.func.isRequired,
+    submitQRHardwareSignature: PropTypes.func.isRequired,
+    cancelQRHardwareSignRequest: PropTypes.func.isRequired,
     history: PropTypes.object,
 
     request: PropTypes.object.isRequired,
@@ -32,10 +32,9 @@ class AirGapedSignRequest extends Component {
   };
 
   renderPlayer = () => {
-    console.log(this.props);
     const {
       payload: request,
-      cancelAirGapedSignRequest,
+      cancelQRHardwareSignRequest,
       hideModal,
     } = this.props;
     const { payload, title, description } = request;
@@ -46,7 +45,7 @@ class AirGapedSignRequest extends Component {
         title={title}
         description={description}
         hideModal={hideModal}
-        cancelAirGapedSignRequest={cancelAirGapedSignRequest}
+        cancelQRHardwareSignRequest={cancelQRHardwareSignRequest}
         toRead={this.toRead}
       />
     );
@@ -54,16 +53,16 @@ class AirGapedSignRequest extends Component {
 
   renderReader = () => {
     const {
-      cancelAirGapedSignRequest,
+      cancelQRHardwareSignRequest,
       hideModal,
-      submitAirGapedSignature,
+      submitQRHardwareSignature,
       payload: request,
     } = this.props;
     return (
       <Reader
-        cancelAirGapedSignRequest={cancelAirGapedSignRequest}
+        cancelQRHardwareSignRequest={cancelQRHardwareSignRequest}
         hideModal={hideModal}
-        submitAirGapedSignature={submitAirGapedSignature}
+        submitQRHardwareSignature={submitQRHardwareSignature}
         requestId={request.requestId}
       />
     );
@@ -79,4 +78,4 @@ class AirGapedSignRequest extends Component {
   }
 }
 
-export default withModalProps(AirGapedSignRequest);
+export default withModalProps(QRHardwareSignRequest);

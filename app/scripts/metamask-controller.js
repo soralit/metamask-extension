@@ -14,7 +14,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
-import { MetaMaskKeyring as AirGapedKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import {
@@ -346,7 +346,7 @@ export default class MetamaskController extends EventEmitter {
     const additionalKeyrings = [
       TrezorKeyring,
       LedgerBridgeKeyring,
-      AirGapedKeyring,
+      QRHardwareKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -562,13 +562,13 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
     });
 
-    this.airGapedKeyring = new AirGapedKeyring();
+    this.qrHardwareKeyring = new QRHardwareKeyring();
 
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
         NetworkController: this.networkController.store,
-        AirGapedState: this.initialAirGapedState.bind(this)(),
+        QRHardwareState: this.initialQRHardwareState.bind(this)(),
         AccountTracker: this.accountTracker.store,
         TxController: this.txController.memStore,
         CachedBalancesController: this.cachedBalancesController.store,
@@ -820,22 +820,22 @@ export default class MetamaskController extends EventEmitter {
       ),
       setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
 
-      // air gaped devices
-      submitAirGapedCryptoHDKey: nodeify(
-        this.airGapedKeyring.submitCryptoHDKey,
-        this.airGapedKeyring,
+      // qr hardware devices
+      submitQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.submitCryptoHDKey,
+        this.qrHardwareKeyring,
       ),
-      cancelReadAirGapedCryptoHDKey: nodeify(
-        this.airGapedKeyring.cancelReadCryptoHDKey,
-        this.airGapedKeyring,
+      cancelReadQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.cancelReadCryptoHDKey,
+        this.qrHardwareKeyring,
       ),
-      submitAirGapedSignature: nodeify(
-        this.airGapedKeyring.submitSignature,
-        this.airGapedKeyring,
+      submitQRHardwareSignature: nodeify(
+        this.qrHardwareKeyring.submitSignature,
+        this.qrHardwareKeyring,
       ),
-      cancelAirGapedSignRequest: nodeify(
-        this.airGapedKeyring.cancelSignRequest,
-        this.airGapedKeyring,
+      cancelQRHardwareSignRequest: nodeify(
+        this.qrHardwareKeyring.cancelSignRequest,
+        this.qrHardwareKeyring,
       ),
 
       // mobile
@@ -1461,8 +1461,8 @@ export default class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case 'airgaped':
-        keyringName = AirGapedKeyring.type;
+      case 'qr-hardware':
+        keyringName = QRHardwareKeyring.type;
         break;
       default:
         throw new Error(
@@ -3066,15 +3066,15 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.setLocked();
   }
 
-  //air gaped related methods
+  //qr hardware related methods
 
-  initialAirGapedState() {
-    const airGapedStore = new ObservableStore({
-      airgaped: this.airGapedKeyring.getMemStore().getState(),
+  initialQRHardwareState() {
+    const qrHardwareStore = new ObservableStore({
+      qrHardware: this.qrHardwareKeyring.getMemStore().getState(),
     });
-    this.airGapedKeyring.getMemStore().subscribe((state) => {
-      airGapedStore.updateState({ airgaped: state });
+    this.qrHardwareKeyring.getMemStore().subscribe((state) => {
+      qrHardwareStore.updateState({ qrHardware: state });
     });
-    return airGapedStore;
+    return qrHardwareStore;
   }
 }
