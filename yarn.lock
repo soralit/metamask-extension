@@ -2634,13 +2634,13 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@keystonehq/base-eth-keyring@^0.0.5-alpha.0":
-  version "0.0.5-alpha.0"
-  resolved "https://registry.yarnpkg.com/@keystonehq/base-eth-keyring/-/base-eth-keyring-0.0.5-alpha.0.tgz#eab64541967022d86d45dee7442ed3586f6b0b4d"
-  integrity sha512-J1dZdt0RwxDGfpaUQhd8EUxuMZwy40G5uBiXq2iUlcX2Ct4nx+7+Whfgjvoz65L3fTRVfYUwQkhlQ4YbBqMgrQ==
+"@keystonehq/base-eth-keyring@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@keystonehq/base-eth-keyring/-/base-eth-keyring-0.0.5.tgz#344e3c8896be3e004a4a6cd3572092e0cf4e3027"
+  integrity sha512-SCdaqH5VffUo3Nu/qT530NALAjIH1tO4Ym27fk5tDqE+T4VAo9RBUdksP3/GO9oOLPPIGfdYECFWLgxw3uf4Ww==
   dependencies:
     "@ethereumjs/tx" "3.0.0"
-    "@keystonehq/bc-ur-registry-eth" "^0.6.8"
+    "@keystonehq/bc-ur-registry-eth" "^0.6.9"
     ethereumjs-util "^7.0.8"
     hdkey "^2.0.1"
     uuid "^8.3.2"
@@ -2649,6 +2649,16 @@
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@keystonehq/bc-ur-registry-eth/-/bc-ur-registry-eth-0.6.8.tgz#1cbb661a25a27f3b0d68ad0644883c2521b4bbc1"
   integrity sha512-JluftBw7BbK2v/Lv3j9nwr5QWqXnDbIGB/7FLKwrniKpMCihbA/Lpr0lK6vOqo2+7bReJ7yXMm2LOaXSEdQ+hw==
+  dependencies:
+    "@keystonehq/bc-ur-registry" "^0.4.4"
+    ethereumjs-util "^7.0.8"
+    hdkey "^2.0.1"
+    uuid "^8.3.2"
+
+"@keystonehq/bc-ur-registry-eth@^0.6.9":
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/@keystonehq/bc-ur-registry-eth/-/bc-ur-registry-eth-0.6.9.tgz#b33c323ad290919375dde94a70d62934abc8b9aa"
+  integrity sha512-qdRCyRAFgOztuVFrsC1e/PcJ9iTvseJSz4S4LLbmG/3QKMl/rTsZOhh8DgKfhxmjzeUPZB2fjFCLXtYpQ+coWw==
   dependencies:
     "@keystonehq/bc-ur-registry" "^0.4.4"
     ethereumjs-util "^7.0.8"
@@ -2664,13 +2674,16 @@
     base58check "^2.0.0"
     tslib "^2.3.0"
 
-"@keystonehq/metamask-airgapped-keyring@0.0.4-alpha.0":
-  version "0.0.4-alpha.0"
-  resolved "https://registry.yarnpkg.com/@keystonehq/metamask-airgapped-keyring/-/metamask-airgapped-keyring-0.0.4-alpha.0.tgz#96c132f0c7412f0f75b1dd122b90eb2a1c791b72"
-  integrity sha512-fA5CJ6QdaIX/2Goa475ZOJwK8ijcRUHMUfJbLU2XpApBhk7X980licO0tti1ere1W/QhIq7emVat7jS7badiGA==
+"@keystonehq/metamask-airgapped-keyring@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@keystonehq/metamask-airgapped-keyring/-/metamask-airgapped-keyring-0.0.4.tgz#595816c96f03f8047ed94eda0fc82fc9dd0fd17b"
+  integrity sha512-Koj9UkQuqH8SFBWR9URRpUQhD9quUehWDFTBlCOgimcyIuiCook6IJ72HkKyZbqMu9ufbluzs+TQEeep2JFmWg==
   dependencies:
-    "@keystonehq/base-eth-keyring" "^0.0.5-alpha.0"
-    "@keystonehq/bc-ur-registry-eth" "^0.6.8"
+    "@ethereumjs/tx" "^3.3.0"
+    "@keystonehq/base-eth-keyring" "^0.0.5"
+    "@keystonehq/bc-ur-registry-eth" "^0.6.9"
+    rlp "^2.2.6"
+    uuid "^8.3.2"
 
 "@lavamoat/allow-scripts@^1.0.6":
   version "1.0.6"
@@ -24106,7 +24119,7 @@ ripple-lib@1.8.2:
     ripple-lib-transactionparser "0.8.2"
     ws "^7.2.0"
 
-rlp@^2.0.0, rlp@^2.2.1, rlp@^2.2.2, rlp@^2.2.3, rlp@^2.2.4:
+rlp@^2.0.0, rlp@^2.2.1, rlp@^2.2.2, rlp@^2.2.3, rlp@^2.2.4, rlp@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/rlp/-/rlp-2.2.6.tgz#c80ba6266ac7a483ef1e69e8e2f056656de2fb2c"
   integrity sha512-HAfAmL6SDYNWPUOJNrM500x4Thn4PZsEy5pijPh40U9WfNk0z15hUYzO9xVIMAdIHdFtD8CBDHd75Td1g36Mjg==
