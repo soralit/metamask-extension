@@ -12,6 +12,7 @@ export default class SelectHardware extends Component {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
     useLedgerLive: PropTypes.bool.isRequired,
+    isQRCodeOpen: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -82,7 +83,7 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
-          {this.renderConnectToQRButton()}
+          {this.props.isQRCodeOpen && this.renderConnectToQRButton()}
         </div>
       </>
     );
