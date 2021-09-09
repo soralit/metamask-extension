@@ -13,8 +13,7 @@ const mapDispatchToProps = (dispatch) => {
     hideModal: () => {
       dispatch(hideModal());
     },
-    submitQRHardwareSignature: (requestId, cbor) =>
-      submitQRHardwareSignature(requestId, cbor),
+    submitQRHardwareSignature,
     cancelQRHardwareSignRequest: () => dispatch(cancelQRHardwareSignRequest()),
   };
 };
