@@ -63,6 +63,11 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getCurrentQRHardwareSignRequest(state) {
+  const { sign } = state.metamask.qrHardware;
+  return sign;
+}
+
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
 

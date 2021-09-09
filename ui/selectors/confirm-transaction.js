@@ -23,7 +23,11 @@ import {
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
+import {
+  getCurrentChainId,
+  deprecatedGetCurrentNetworkId,
+  getCurrentQRHardwareSignRequest,
+} from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
@@ -132,6 +136,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
   unapprovedTypedMessagesCountSelector,
   deprecatedGetCurrentNetworkId,
   getCurrentChainId,
+  getCurrentQRHardwareSignRequest,
   (
     unapprovedTxs = {},
     unapprovedMsgCount = 0,
@@ -141,10 +146,13 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     unapprovedTypedMessagesCount = 0,
     network,
     chainId,
+    sign,
   ) => {
     const filteredUnapprovedTxIds = Object.keys(unapprovedTxs).filter((txId) =>
       transactionMatchesNetwork(unapprovedTxs[txId], chainId, network),
     );
+
+    const qrHardwareSignRequest = sign.request ? 1 : 0;
 
     return (
       filteredUnapprovedTxIds.length +
@@ -152,7 +160,8 @@ export const unconfirmedTransactionsCountSelector = createSelector(
       unapprovedMsgCount +
       unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount
+      unapprovedEncryptionPublicKeyMsgCount +
+      qrHardwareSignRequest
     );
   },
 );
